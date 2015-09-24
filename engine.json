@@ -4,16 +4,16 @@
   "engineFactory": "org.template.SVDItemSimilarityEngine",
   "datasource": {
     "params" : {
-      "appName": "SVDApp1"
+      "appName": "HF-SVDSimilarProduct"
     }
   },
   "algorithms": [
     {
       "name": "algo",
       "params": {
-        "dimensions": 50,
-        "yearWeight": 2.0,
-        "durationWeight": 1.0,
+        "dimensions": 12,
+        "taxonWeight": 1.0,
+        "subTaxonWeight": 1.0,
         "normalizeProjection": true
       }
     }

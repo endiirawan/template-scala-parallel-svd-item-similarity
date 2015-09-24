@@ -1,4 +1,4 @@
-package org.template
+package com.happyfresh
 
 import io.prediction.controller.PDataSource
 import io.prediction.controller.EmptyEvaluationInfo
@@ -29,16 +29,15 @@ class DataSource(val dsp: DataSourceParams)
       entityType = "item"
     )(sc).map { case (entityId, properties) =>
       val item = try {
-        val title: String = properties.get[String]("title")
-        val producer: String = properties.get[String]("producer")
-        val director: String = properties.get[String]("director")
-        val genres: Array[String] = properties.get[Array[String]]("genres")
-        val actors: Array[String] = properties.get[Array[String]]("actors")
-        val year: Int = properties.get[Int]("year")
-        val duration: Int = properties.get[Int]("duration")
+        val name: String = properties.get[String]("name")
+        //val description: String = properties.get[String]("description")
+        //val director: String = properties.get[String]("weight")
+        val categories: Array[String] = properties.get[Array[String]]("categories")
+        //val actors: Array[String] = properties.get[Array[String]]("actors")
+        val taxon_id: Int = properties.get[Int]("taxon_id")
+        val subtaxon_id: Int = properties.get[Int]("sub_taxon_id")
 
-        Item(entityId, title, year, duration, genres, producer, director,
-          actors)
+        Item(entityId, name, taxon_id, subtaxon_id, categories)
       } catch {
         case e: Exception => {
           logger.error(s"Failed to get properties ${properties} of" +
@@ -53,9 +52,7 @@ class DataSource(val dsp: DataSourceParams)
   }
 }
 
-case class Item(item: String, title: String, year: Int, duration: Int,
-                    genres: Array[String], producer: String, director:
-                    String, actors: Array[String])
+case class Item(item: String, name: String, taxon_id: Int, subtaxon_id: Int, categories: Array[String])
 
 class TrainingData(val items: RDD[(String, Item)]) extends Serializable {
   override def toString = {
