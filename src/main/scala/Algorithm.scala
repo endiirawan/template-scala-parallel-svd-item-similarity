@@ -20,7 +20,7 @@ class Model(val itemIds: BiMap[String, Int], val projection: DenseMatrix)
   override def toString = s"Items: ${itemIds.size}"
 }
 
-case class AlgorithmParams(dimensions: Int, taxonWeight: Double, subTaxonWeight: Double, normalizeProjection: Boolean) extends Params    
+case class AlgorithmParams(dimensions: Int, enableName: Boolean, enableDescription: Boolean, normalizeProjection: Boolean) extends Params    
 
 
 class Algorithm(val ap: AlgorithmParams)
@@ -97,8 +97,17 @@ class Algorithm(val ap: AlgorithmParams)
      * Encode categorical vars
      * We use here one-hot encoding
      */
+    var categorical = Seq(encode(data.items.map(_._2.categories)))
 
-    val categorical = Seq(encode(data.items.map(_._2.categories)))
+
+    if(ap.enableName){
+      val name = Seq(encode(data.items.map(_._2.name)))
+      categorical = categorical ++ name
+    }
+    if(ap.enableDescription){
+      val desc = Seq(encode(data.items.map(_._2.description)))
+      categorical = categorical ++ desc
+    }
 
 
     /**
@@ -110,10 +119,10 @@ class Algorithm(val ap: AlgorithmParams)
      * accordingly
      */
 
-    val numericRow = data.items.map(x => Vectors.dense(x._2.taxon_id, x._2.subtaxon_id))
-    val weights = Array(ap.taxonWeight, ap.subTaxonWeight)
-    val scaler = new StandardScaler(withMean = true, withStd = true).fit(numericRow)
-    val numeric = numericRow.map(x => Vectors.dense(scaler.transform(x).toArray.zip(weights).map { case (x, w) => x * w }))
+    //val numericRow = data.items.map(x => Vectors.dense(x._2.taxon_id, x._2.subtaxon_id))
+    //val weights = Array(ap.taxonWeight, ap.subTaxonWeight)
+    //val scaler = new StandardScaler(withMean = true, withStd = true).fit(numericRow)
+    //val numeric = numericRow.map(x => Vectors.dense(scaler.transform(x).toArray.zip(weights).map { case (x, w) => x * w }))
 
     /**
      * Now we merge all data and normalize vectors so that they have unit norm
@@ -121,7 +130,7 @@ class Algorithm(val ap: AlgorithmParams)
      */
 
     val normalizer = new Normalizer(p = 2.0)
-    val allData = normalizer.transform((categorical ++ Seq(numeric)).reduce(merge))
+    val allData = normalizer.transform((categorical).reduce(merge))
 
     /**
      * Now we need to transpose RDD because SVD better works with ncol << nrow
@@ -131,7 +140,7 @@ class Algorithm(val ap: AlgorithmParams)
      * case U matrix should be used
      */
 
-
+    
     val transposed = transposeRDD(allData)
 
     val mat: RowMatrix = new RowMatrix(transposed)

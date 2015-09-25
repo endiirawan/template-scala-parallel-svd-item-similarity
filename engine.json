@@ -1,7 +1,7 @@
 {
   "id": "default",
   "description": "Default settings",
-  "engineFactory": "org.template.SVDItemSimilarityEngine",
+  "engineFactory": "com.happyfresh.SVDItemSimilarityEngine",
   "datasource": {
     "params" : {
       "appName": "HF-SVDSimilarProduct"
@@ -12,8 +12,8 @@
       "name": "algo",
       "params": {
         "dimensions": 12,
-        "taxonWeight": 1.0,
-        "subTaxonWeight": 1.0,
+        "enableName": true
+        "enableDescription": true
         "normalizeProjection": true
       }
     }
