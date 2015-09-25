@@ -20,7 +20,7 @@ class Model(val itemIds: BiMap[String, Int], val projection: DenseMatrix)
   override def toString = s"Items: ${itemIds.size}"
 }
 
-case class AlgorithmParams(dimensions: Int, enableName: Boolean, enableDescription: Boolean, normalizeProjection: Boolean) extends Params    
+case class AlgorithmParams(dimensions: Int, enableName: Boolean, enableDescription: Boolean, enableStores: Boolean, normalizeProjection: Boolean) extends Params    
 
 
 class Algorithm(val ap: AlgorithmParams)
@@ -107,6 +107,10 @@ class Algorithm(val ap: AlgorithmParams)
     if(ap.enableDescription){
       val desc = Seq(encode(data.items.map(_._2.description)))
       categorical = categorical ++ desc
+    }
+    if(ap.enableStores){
+      val stores = Seq(encode(data.items.map(_._2.stores)))
+      categorical = categorical ++ stores
     }
 
 

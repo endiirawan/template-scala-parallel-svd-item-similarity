@@ -30,18 +30,12 @@ class DataSource(val dsp: DataSourceParams)
     )(sc).map { case (entityId, properties) =>
       val item = try {
         val name: String = properties.get[String]("name")
-        //val director: String = properties.get[String]("weight")
-        var desc = properties.getOrElse[String]("description", null)
-        if(desc == null){
-          desc = ""
-        }
+        var desc = properties.getOrElse[String]("description", "")
         val description = desc
         val categories: Array[String] = properties.get[Array[String]]("categories")
-        //val actors: Array[String] = properties.get[Array[String]]("actors")
-        //val taxon_id: Int = properties.get[Int]("taxon_id")
-        //val subtaxon_id: Int = properties.get[Int]("sub_taxon_id")
+        val stores: Array[String] = properties.get[Array[String]]("stores")
 
-        Item(entityId, name, description, categories)
+        Item(entityId, name, description, categories, stores)
       } catch {
         case e: Exception => {
           logger.error(s"Failed to get properties ${properties} of" +
@@ -56,7 +50,7 @@ class DataSource(val dsp: DataSourceParams)
   }
 }
 
-case class Item(item: String, name: String, description: String, categories: Array[String])
+case class Item(item: String, name: String, description: String, categories: Array[String], stores: Array[String])
 
 class TrainingData(val items: RDD[(String, Item)]) extends Serializable {
   override def toString = {

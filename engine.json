@@ -11,9 +11,10 @@
     {
       "name": "algo",
       "params": {
-        "dimensions": 12,
+        "dimensions": 50,
         "enableName": true
-        "enableDescription": true
+        "enableDescription": false
+        "enableStores": true
         "normalizeProjection": true
       }
     }
