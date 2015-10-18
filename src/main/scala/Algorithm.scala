@@ -229,3 +229,4 @@ class Algorithm(val ap: AlgorithmParams)
     PredictedResult(result)
   }
 }
+
