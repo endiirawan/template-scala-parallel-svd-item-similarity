@@ -1,4 +1,4 @@
-package org.template
+package com.happyfresh
 
 import io.prediction.controller.LServing
 
